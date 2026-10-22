@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Catalogue de livres</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Catalogue de livres</h1>
+
+    <form class="formulaire" @submit.prevent="ajouter">
+      <h2>Ajouter un livre</h2>
+      <input type="text" v-model.trim="newBook.title" placeholder="Titre">
+      <input type="text" v-model.lazy="newBook.author" placeholder="Auteur">
+      <input type="number" v-model.number="newBook.year" placeholder="Année">
+      <select v-model="newBook.genre">
+        <option value="">Genre</option>
+        <option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</option>
+      </select>
+      <label>
+        <input type="checkbox" v-model="newBook.isFav"> Favori
+      </label>
+
+      <div>
+        <input type="text" v-model.trim="motCle" placeholder="Mot-clé puis Entrée"
+               @keydown.enter.prevent @keyup.enter="ajouterMotCle">
+      </div>
+      <div class="chips">
+        <span v-for="mot in newBook.keywords" :key="mot" class="chip">
+          {{ mot }}
+          <button type="button" @click="retirerMotCle(mot)">×</button>
+        </span>
+      </div>
+
+      <button type="submit" :disabled="!valide">Ajouter</button>
+    </form>
+
+    <p>{{ nbFavoris }} livre(s) favori(s)</p>
+    <button @click="favorisSeulement = !favorisSeulement">
+      {{ favorisSeulement ? 'Afficher tous les livres' : 'Afficher uniquement les favoris' }}
+    </button>
+
+    <div v-for="book in livresAffiches" :key="book.id" class="book" :class="{ favori: book.isFav }"
+         @click="toggleFavori(book)">
+      <h2>{{ book.title }}</h2>
+      <p>{{ book.author }} - {{ book.year }}</p>
+      <span v-if="book.isFav" class="badge-favori">Favori</span>
+      <span v-for="mot in book.keywords" :key="mot" class="chip">{{ mot }}</span>
+      <div>
+        <button @click.stop="details[book.id] = !details[book.id]">Détails</button>
+        <button @click.stop="supprimer(book)">Supprimer</button>
+      </div>
+      <p v-show="details[book.id]">{{ book.genre }}</p>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
