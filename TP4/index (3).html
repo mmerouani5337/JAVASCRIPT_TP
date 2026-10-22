@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Budget étudiant</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; }
+button.active { background: #2563eb; color: #fff; }
+.ok { color: green; }
+.attention { color: orange; }
+.depasse { color: red; }
+li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Budget étudiant</h1>
+
+  <form @submit.prevent="ajouter">
+    <input v-model="nouvelleDepense.titre" placeholder="Titre" required>
+    <input v-model.number="nouvelleDepense.montant" type="number" min="0" step="0.01" placeholder="Montant" required>
+    <select v-model="nouvelleDepense.categorie">
+      <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+    </select>
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <div>
+    <button :class="{ active: filtreCategorie === 'toutes' }" @click="choisirCategorie('toutes')">Toutes</button>
+    <button v-for="c in categories" :key="c" :class="{ active: filtreCategorie === c }" @click="choisirCategorie(c)">{{ c }}</button>
+  </div>
+
+  <p>Total affiché : {{ total.toFixed(2) }} DH</p>
+  <p>Total général : {{ totalGeneral.toFixed(2) }} DH / {{ budgetMensuel }} DH</p>
+  <p>Moyenne : {{ moyenne.toFixed(2) }} DH</p>
+
+  <p v-if="totalGeneral < budgetMensuel * 0.8" class="ok">Budget sous contrôle</p>
+  <p v-else-if="totalGeneral <= budgetMensuel" class="attention">Attention : vous approchez de la limite</p>
+  <p v-else class="depasse">Budget dépassé</p>
+
+  <button @click="voirDetail = !voirDetail">Afficher le détail par catégorie</button>
+  <div v-show="voirDetail">
+    <ul>
+      <li v-for="c in categories" :key="c">{{ c }} : {{ totalPar(c).toFixed(2) }} DH</li>
+    </ul>
+  </div>
+
+  <ul v-if="listeDepenses.length">
+    <li v-for="d in listeDepenses" :key="d.id">
+      {{ d.titre }} – {{ d.montant }} DH ({{ d.categorie }})
+      <button @click="supprimer(d)">Supprimer</button>
+    </li>
+  </ul>
+  <p v-else>Aucune dépense à afficher.</p>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      budgetMensuel: 300,
+      categories: ['Alimentation', 'Transport', 'Loisirs', 'Études'],
+      filtreCategorie: 'toutes',
+      voirDetail: false,
+      nouvelleDepense: { titre: '', montant: null, categorie: 'Alimentation' },
+      depenses: [
+        { id: 1, titre: 'Courses', montant: 80, categorie: 'Alimentation' },
+        { id: 2, titre: 'Bus', montant: 30, categorie: 'Transport' },
+        { id: 3, titre: 'Cinéma', montant: 50, categorie: 'Loisirs' }
+      ]
+    };
+  },
+  computed: {
+    listeDepenses() {
+      if (this.filtreCategorie === 'toutes') return this.depenses;
+      return this.depenses.filter(d => d.categorie === this.filtreCategorie);
+    },
+    total() {
+      return this.listeDepenses.reduce((s, d) => s + d.montant, 0);
+    },
+    totalGeneral() {
+      return this.depenses.reduce((s, d) => s + d.montant, 0);
+    },
+    moyenne() {
+      if (this.listeDepenses.length === 0) return 0;
+      return this.total / this.listeDepenses.length;
+    }
+  },
+  methods: {
+    choisirCategorie(cat) {
+      this.filtreCategorie = cat;
+    },
+    totalPar(cat) {
+      return this.depenses
+        .filter(d => d.categorie === cat)
+        .reduce((s, d) => s + d.montant, 0);
+    },
+    ajouter() {
+      this.depenses.push({
+        id: Date.now(),
+        titre: this.nouvelleDepense.titre,
+        montant: Number(this.nouvelleDepense.montant),
+        categorie: this.nouvelleDepense.categorie
+      });
+      this.nouvelleDepense = { titre: '', montant: null, categorie: 'Alimentation' };
+    },
+    supprimer(depense) {
+      this.depenses = this.depenses.filter(d => d.id !== depense.id);
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
