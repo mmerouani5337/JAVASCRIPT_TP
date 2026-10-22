@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 750px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+button {
+  cursor: pointer;
+  padding: 4px 10px;
+}
+
+input, select {
+  padding: 4px 6px;
+  margin: 4px 6px 4px 0;
+}
+
+.alerte-globale {
+  background-color: #fdecea;
+  border: 1px solid #e74c3c;
+  color: #c0392b;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.resume {
+  display: flex;
+  gap: 24px;
+}
+
+.article {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.ligne {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.categorie {
+  color: #666;
+  font-size: 13px;
+}
+
+.quantite {
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: white;
+}
+
+.rupture {
+  background-color: #e74c3c;
+}
+
+.faible {
+  background-color: #f39c12;
+}
+
+.ok {
+  background-color: #27ae60;
+}
+
+.detail {
+  background-color: #f7f7f7;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.detail p {
+  margin: 4px 0;
+}
+
+.supprimer {
+  color: #c0392b;
+}
+
+.erreur {
+  color: #c0392b;
+}
