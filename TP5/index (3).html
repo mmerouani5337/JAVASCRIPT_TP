@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock de la buvette</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Stock de la buvette</h1>
+
+    <div v-if="nbRupture > 0" class="alerte-globale">
+      Attention : {{ nbRupture }} article(s) en rupture de stock.
+    </div>
+
+    <div class="resume">
+      <p>Valeur totale du stock : {{ valeurStock.toFixed(2) }} DH</p>
+      <p>Articles en rupture : {{ nbRupture }}</p>
+    </div>
+
+    <div class="recherche">
+      <input type="text" v-model="recherche" placeholder="Rechercher un article">
+      <select v-model="filtre">
+        <option value="">Toutes les catégories</option>
+        <option v-for="categorie in categories" :key="categorie" :value="categorie">{{ categorie }}</option>
+      </select>
+    </div>
+
+    <p v-if="liste.length === 0">Aucun article ne correspond à la recherche.</p>
+
+    <div v-for="article in liste" :key="article.id" class="article">
+      <div class="ligne">
+        <strong>{{ article.nom }}</strong>
+        <span class="categorie">{{ article.categorie }}</span>
+
+        <span v-if="article.quantite === 0" class="badge rupture">Rupture</span>
+        <span v-else-if="article.quantite <= article.seuilAlerte" class="badge faible">Stock faible</span>
+        <span v-else class="badge ok">Ok</span>
+      </div>
+
+      <div class="ligne">
+        <button @click="moins(article)">-</button>
+        <span class="quantite">{{ article.quantite }}</span>
+        <button @click="plus(article)">+</button>
+        <button @click="voirDetail(article)">{{ detail === article.id ? 'Masquer' : 'Détail' }}</button>
+        <button @click="ouvrirReappro(article)">Réapprovisionner</button>
+        <button class="supprimer" @click="supprimer(article)">Supprimer</button>
+      </div>
+
+      <div v-show="detail === article.id" class="detail">
+        <p>Prix unitaire : {{ article.prixUnitaire.toFixed(2) }} DH</p>
+        <p>Seuil d'alerte : {{ article.seuilAlerte }}</p>
+        <p>Valeur en stock : {{ (article.quantite * article.prixUnitaire).toFixed(2) }} DH</p>
+      </div>
+
+      <form v-if="reappro === article.id" class="reappro" @submit.prevent="reapprovisionner(article)">
+        <input type="number" min="1" v-model.number="qteReappro" placeholder="Quantité à ajouter">
+        <button type="submit">Ajouter</button>
+        <button type="button" @click="reappro = null">Annuler</button>
+      </form>
+    </div>
+
+    <h2>Ajouter un article</h2>
+    <form class="ajout" @submit.prevent="ajouter">
+      <input type="text" v-model="nouvelArticle.nom" placeholder="Nom">
+      <select v-model="nouvelArticle.categorie">
+        <option value="">Catégorie</option>
+        <option v-for="categorie in categories" :key="categorie" :value="categorie">{{ categorie }}</option>
+      </select>
+      <input type="number" min="0" v-model.number="nouvelArticle.quantite" placeholder="Quantité">
+      <input type="number" min="0" step="0.5" v-model.number="nouvelArticle.prixUnitaire" placeholder="Prix unitaire">
+      <input type="number" min="0" v-model.number="nouvelArticle.seuilAlerte" placeholder="Seuil d'alerte">
+      <button type="submit">Ajouter</button>
+    </form>
+    <p v-if="erreur" class="erreur">{{ erreur }}</p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
