@@ -1,0 +1,30 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 640px;
+  margin: 40px auto;
+  color: #1b2430;
+}
+
+.book {
+  border: 1px solid #dde1d9;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+/* TODO 7 : complétez cette classe puis appliquez-la conditionnellement
+   aux livres favoris avec :class="{ favori: book.isFav }" */
+.favori {
+  border-color: #caa53d;
+  background: #fbf6e6;
+}
+
+.badge-favori {
+  display: inline-block;
+  background: #caa53d;
+  color: white;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+}

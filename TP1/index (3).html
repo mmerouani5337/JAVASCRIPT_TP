@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>TP1 - Catalogue de livres</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+    <!-- TODO 3 : affichez ici le nombre de livres favoris (computed nombreFavoris) -->
+         <p>Nombre de favoris : {{ nombreFavoris }}</p>
+
+
+    <h1>Catalogue de livres</h1>
+
+    <!-- TODO 4 : bouclez sur "books" avec v-for + :key pour générer une <div class="book"> par livre -->
+
+    <div
+      v-for="book in books"
+      :key="book.id"
+      class="book"
+      :class="{ favori: book.isFav }"
+    >
+      <h2>
+        {{ book.title }}
+        <span v-if="book.isFav" class="badge-favori">Favori</span>
+      </h2>
+      <p><strong>Auteur :</strong> {{ book.author }}</p>
+      <p><strong>Genre :</strong> {{ book.genre }}</p>
+      <p><strong>Année :</strong> {{ book.year }}</p>
+
+      <button @click="toggleDetails(book)">
+        {{ showDetails[book.id] ? 'Masquer les détails' : 'Afficher les détails' }}
+      </button>
+
+      <div v-if="showDetails[book.id]">
+        <p>Plus d'informations sur ce livre.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Étape 1 : import de Vue depuis le CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
