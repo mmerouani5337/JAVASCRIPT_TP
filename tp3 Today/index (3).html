@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liste de tâches</title>
+    <style>
+        body { 
+            max-width: 600px;
+            margin: 40px auto; 
+            padding: 0 16px; 
+            font-family: Arial, sans-serif; 
+        }
+        li { 
+            margin: 12px 0; 
+        }
+        .active { 
+            font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Liste de tâches</h1>
+        <p>Nombre total de tâches : {{ totalTasks }}</p>
+
+        <button @click="filter = 'all'" :class="{ active: filter === 'all' }">Toutes</button>
+        <button @click="filter = 'todo'" :class="{ active: filter === 'todo' }">À faire</button>
+        <button @click="filter = 'completed'" :class="{ active: filter === 'completed' }">Terminées</button>
+
+        <p v-if="filteredTasks.length === 0">Aucune tâche dans cette catégorie.</p>
+        <ul v-else>
+            <li v-for="task in filteredTasks" :key="task.id">
+                <h2>{{ task.title }}</h2>
+                <p>{{ task.description }}</p>
+                <button v-show="!task.completed" @click="markAsCompleted(task.id)">
+                    Marquer comme terminée
+                </button>
+                <span v-if="task.completed">Terminée</span>
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="./app.js"></script>
+</body>
+</html>
